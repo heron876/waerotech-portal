@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waero Tech | Ultimate Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Fira+Code:wght@400;600&display=swap');
+
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --accent: #f093fb;
+            --dark: #050810;
+            --panel: #0f1626;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body { margin: 0; font-family: 'Outfit', sans-serif; background: var(--dark); color: white; overflow-x: hidden; }
+
+        /* --- ADMIN BADGE --- */
+        #admin-badge { display: none; background: gold; color: black; padding: 2px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: 800; margin-left: 10px; vertical-align: middle; }
+
+        /* --- NAVIGATION --- */
+        nav { display: flex; justify-content: space-between; padding: 20px 5%; background: rgba(15, 22, 38, 0.95); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass); }
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- LAYOUTS --- */
+        .btn { background: linear-gradient(45deg, var(--primary), var(--secondary)); border: none; padding: 12px 24px; color: white; border-radius: 8px; cursor: pointer; font-weight: 800; transition: 0.3s; }
+        .btn:hover { box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); transform: translateY(-2px); }
+        
+        #front-page { display: flex; padding: 50px 8%; gap: 50px; align-items: center; min-height: 80vh; }
+        .auth-box { background: var(--panel); padding: 40px; border-radius: 20px; border: 1px solid var(--glass); width: 400px; }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: #0a0f1d; padding: 30px 20px; border-right: 1px solid var(--glass); }
+        .main-view { flex: 1; padding: 40px; overflow-y: auto; }
+        .nav-item { display: block; width: 100%; text-align: left; background: transparent; border: none; color: #94a3b8; padding: 15px; font-size: 1rem; cursor: pointer; border-radius: 8px; margin-bottom: 5px; font-family: 'Outfit';}
+        .nav-item.active { background: rgba(0, 242, 254, 0.1); color: var(--primary); font-weight: 800; }
+
+        /* --- VIDEO & MUSIC --- */
+        .video-container { width: 100%; aspect-ratio: 16/9; margin-bottom: 20px; border-radius: 15px; overflow: hidden; border: 2px solid var(--glass); }
+        .music-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .song-card { background: var(--panel); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--glass); }
+
+        /* --- ADMIN TABLE --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: var(--primary); border-bottom: 2px solid var(--glass); padding: 10px; }
+        td { padding: 10px; border-bottom: 1px solid var(--glass); font-size: 0.9rem; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="front-page">
+        <div style="flex: 1;">
+            <h1 style="font-size: 4rem;">Waero <span style="color: var(--primary);">Academy</span></h1>
+            <p style="color: #94a3b8; font-size: 1.2rem;">The only platform where you can code, learn, and listen to the 6 God.</p>
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000" style="width: 100%; border-radius: 20px; margin-top: 20px;">
+        </div>
+
+        <div class="auth-box">
+            <h2 id="auth-title">Welcome Back</h2>
+            <div id="login-form">
+                <input type="text" id="user" placeholder="Username (heron)" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white;">
+                <input type="password" id="pass" placeholder="Password (her55)" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white;">
+                <button class="btn" style="width: 100%; margin-top: 10px;" onclick="doLogin()">Enter System</button>
+                <p style="text-align:center; font-size: 0.8rem; color: #64748b; cursor:pointer;" onclick="toggleAuth()">Don't have an account? Sign Up</p>
+            </div>
+            <div id="signup-form" class="hidden">
+                <input type="text" id="new-name" placeholder="Full Name" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white;">
+                <input type="text" id="new-user" placeholder="Username" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white;">
+                <input type="password" id="new-pass" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; background:#000; border:1px solid #333; color:white;">
+                <button class="btn" style="width: 100%; margin-top: 10px;" onclick="doSignup()">Create Account</button>
+                <p style="text-align:center; font-size: 0.8rem; color: #64748b; cursor:pointer;" onclick="toggleAuth()">Back to Login</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <aside class="sidebar">
+            <div class="logo">WAERO TECH <span id="admin-badge">ADMIN</span></div>
+            <p style="color: #444; font-size: 0.7rem; margin-top: 20px;">MENU</p>
+            <button class="nav-item active" onclick="showTab('learn')">🎓 Learn Coding</button>
+            <button class="nav-item" onclick="showTab('music')">🦉 Drake Radio</button>
+            <button class="nav-item" onclick="showTab('billing')">💳 Payments</button>
+            <button id="admin-nav" class="nav-item hidden" onclick="showTab('admin')">🛡️ Admin Panel</button>
+            <button class="nav-item" style="color: #f5576c; margin-top: 40px;" onclick="location.reload()">Logout</button>
+        </aside>
+
+        <main class="main-view">
+            <div id="tab-learn" class="tab-content">
+                <h1>Waero Learning Hub</h1>
+                <div class="video-container">
+                    <iframe id="video-player" width="100%" height="100%" src="https://www.youtube.com/embed/kqtD5dpn9C8" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn" onclick="changeVid('kqtD5dpn9C8')">Python</button>
+                    <button class="btn" onclick="changeVid('qz0aPaKuFrw')">HTML</button>
+                    <button class="btn" onclick="changeVid('A74Tojjf078')">Java</button>
+                </div>
+                <h3>Notes</h3>
+                <p>Select a course above to play the video and see example code.</p>
+                <pre style="background: #111; padding: 20px; border-radius: 10px; color: #4ade80;"><code># Example Code Snippet
+print("Learning at Waero Tech is easy!")</code></pre>
+            </div>
+
+            <div id="tab-music" class="tab-content hidden">
+                <h1>OVO Sound Station</h1>
+                <p>Listen to Drake's greatest hits while you build the future.</p>
+                <div class="music-grid">
+                    <div class="song-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/9/90/Scorpion_by_Drake.jpg" width="50">
+                        <div><b>God's Plan</b><br><small>Drake</small></div>
+                        <audio controls style="height: 30px; width: 150px;"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+                    </div>
+                    <div class="song-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/a/af/Drake_-_Take_Care_cover.jpg" width="50">
+                        <div><b>Headlines</b><br><small>Drake</small></div>
+                        <audio controls style="height: 30px; width: 150px;"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <h3>Stream Full Album</h3>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX7QOvAn96p2X?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <div id="tab-admin" class="tab-content hidden">
+                <h1>Admin Control Center</h1>
+                <p>Manage all registered Waero Tech users here.</p>
+                <div style="background: #111; padding: 20px; border-radius: 15px;">
+                    <h3>Registered Accounts</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Username</th><th>Password</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-billing" class="tab-content hidden">
+                <h1>Billing & 20% Discount</h1>
+                <div style="background: linear-gradient(45deg, #00f2fe, #f093fb); padding: 40px; border-radius: 20px; text-align: center; color: black;">
+                    <h2>Unlock Full Access</h2>
+                    <p>Use Telebirr or PayPal to pay and get 20% off today.</p>
+                    <button class="btn" style="background: black;" onclick="alert('Telebirr Gateway: 0994417556')">Pay with Telebirr</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DATABASE ---
+        let users = [
+            { name: "Admin Heron", user: "heron", pass: "her55", role: "admin" }
+        ];
+
+        let currentUser = null;
+
+        // --- AUTH LOGIC ---
+        function toggleAuth() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+            document.getElementById('auth-title').innerText = 
+                document.getElementById('signup-form').classList.contains('hidden') ? "Welcome Back" : "Create Account";
+        }
+
+        function doSignup() {
+            const name = document.getElementById('new-name').value;
+            const user = document.getElementById('new-user').value;
+            const pass = document.getElementById('new-pass').value;
+
+            if(name && user && pass) {
+                users.push({ name, user, pass, role: "user" });
+                alert("Account created successfully! Please login.");
+                toggleAuth();
+            }
+        }
+
+        function doLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+
+            const found = users.find(x => x.user === u && x.pass === p);
+            if(found) {
+                currentUser = found;
+                document.getElementById('front-page').style.display = 'none';
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('dashboard').style.display = 'flex';
+                
+                if(found.role === 'admin') {
+                    document.getElementById('admin-badge').style.display = 'inline-block';
+                    document.getElementById('admin-nav').classList.remove('hidden');
+                    updateUserTable();
+                }
+            } else {
+                alert("Invalid Credentials!");
+            }
+        }
+
+        // --- NAVIGATION ---
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+
+        function changeVid(id) {
+            document.getElementById('video-player').src = "https://www.youtube.com/embed/" + id;
+        }
+
+        // --- ADMIN FUNCTIONS ---
+        function updateUserTable() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = "";
+            users.forEach(u => {
+                tbody.innerHTML += `<tr>
+                    <td>${u.name}</td>
+                    <td>${u.user}</td>
+                    <td>${u.pass}</td>
+                    <td><span style="color: ${u.role==='admin'?'gold':'#4ade80'}">${u.role.toUpperCase()}</span></td>
+                </tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
